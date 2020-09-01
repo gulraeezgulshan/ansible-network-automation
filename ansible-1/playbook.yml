@@ -1,0 +1,13 @@
+---
+- name : First Play
+  hosts: routers
+  gather_facts: False
+  connection: local
+  tasks:
+    - name: First Task
+      ios_command:
+        commands: show ip int br
+      register: int_br
+    - name: Second Task
+      debug:
+        var: int_br
