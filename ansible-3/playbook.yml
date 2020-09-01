@@ -1,0 +1,15 @@
+---
+- name : first play
+  hosts: routers
+  gather_facts: false
+  connection: local
+  tasks:
+    - name: configure top level configuration
+      ios_config:
+        lines: hostname {{ inventory_hostname }}
+    - name: configure interface settings
+      ios_config:
+        lines:
+          - description test interface
+          - ip address 192.168.122.10 255.255.255.0
+        parents: interface GigabitEthernet0/1
