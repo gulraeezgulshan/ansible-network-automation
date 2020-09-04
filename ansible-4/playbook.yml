@@ -1,0 +1,27 @@
+---
+- name: VLANS CONF
+  hosts: hosts
+  gather_facts: no
+  connection: local
+  tasks:
+    - name: Configure VLAN ID
+      ios_config:
+        lines:
+          - vlan {{vlan_id}}
+      register: configure_vlan
+
+    - name: Configure VLAN Name
+      ios_config:
+        lines:
+          - name {{vlan_name}}
+        parents: vlan {{vlan_id}}
+
+
+    - name: Show VLAN
+      ios_command:
+        commands: show vlan brief
+      register: show_vlan
+
+    - name: Second Task
+      debug:
+        var: show_vlan

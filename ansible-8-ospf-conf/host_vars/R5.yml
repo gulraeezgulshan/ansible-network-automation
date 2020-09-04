@@ -1,0 +1,12 @@
+hostname: csr-R5
+management_ip: 192.168.10.55
+interfaces:
+  - name: g0/1
+    ip: 192.168.18.2
+    mask: 255.255.255.0
+  - name: g0/2
+    ip: 192.168.20.1
+    mask: 255.255.255.0
+  - name: g0/3
+    ip: 192.168.21.1
+    mask: 255.255.255.0

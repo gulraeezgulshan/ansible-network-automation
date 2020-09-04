@@ -1,0 +1,7 @@
+---
+- name: Build Basic Config Using Roles
+  hosts: all
+  gather_facts: no
+  connection: local
+  roles:
+    - basic_config
