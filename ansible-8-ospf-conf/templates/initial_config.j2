@@ -8,10 +8,6 @@ ip domain name {{ domain }}
 ip ssh version 2
 ip scp server enable
 !
-int {{ management_interface }}
-ip addr {{ management_ip }} {{ mask }}
-no shut
-!
 {% for intr in interfaces %}
 int {{ intr.name }}
 ip addr {{ intr.ip }} {{ intr.mask }}

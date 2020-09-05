@@ -1,6 +1,11 @@
+---
+ansible_host: 192.168.138.54
 hostname: csr-R4
-management_ip: 192.168.10.54
+
 interfaces:
+  - name: g0/0
+    ip: 192.168.138.54
+    mask: 255.255.255.0
   - name: g0/1
     ip: 192.168.12.2
     mask: 255.255.255.0

@@ -1,7 +1,13 @@
 [cisco]
-R1 ansible_host=192.168.10.51
-R2 ansible_host=192.168.10.52
-R3 ansible_host=192.168.10.53
-R4 ansible_host=192.168.10.54
-R5 ansible_host=192.168.10.55
-R6 ansible_host=192.168.10.56
+R1 
+R2 
+R3 
+R4 
+R5 
+R6
+
+[edge]
+R[1:6]
+
+[network:children]
+edge
