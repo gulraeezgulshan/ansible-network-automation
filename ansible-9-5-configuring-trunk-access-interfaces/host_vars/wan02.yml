@@ -1,0 +1,5 @@
+---
+# Initial Configuration Variables
+ansible_host_id: 56
+hostname: iosxe-R2
+management_interface: GigabitEthernet1

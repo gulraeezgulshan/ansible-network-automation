@@ -1,8 +1,15 @@
-!
-ip name-server 192.168.138.250 192.168.138.251
-no ip domain lookup
+-----------------------------------------
+task1-configure hostname and domain name
+-----------------------------------------
+
+hostname access01
 ip domain name axiom.com.pk
-!
-ntp logging
+no ip domain lookup
+ip name-server 192.168.138.250 192.168.138.251
+
+-----------------------------------------
+task2-configure hostname and domain name
+-----------------------------------------
+
 ntp server 192.168.138.50
-!
+ntp logging

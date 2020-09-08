@@ -36,5 +36,29 @@ name voice
 !
 vlan 100
 name web
-!
+
+-------------------------
+task5-configure l2 trunks
+-------------------------
+
+interface GigabitEthernet0/1
+ switchport mode trunk
+ switchport trunk allowed vlan 10,20,100
+
+-------------------------
+task6-enable dot1q trunks
+-------------------------
+
+interface GigabitEthernet0/1
+ switchport trunk encapsulation dot1q
+
+-----------------------------
+task7-configure access ports
+-----------------------------
+
+interface GigabitEthernet0/3
+ switchport access vlan 10
+ switchport mode access
+
+
 

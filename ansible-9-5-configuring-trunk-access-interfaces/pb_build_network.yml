@@ -1,0 +1,64 @@
+---
+- name: configure all lan switches
+  hosts: lan
+  tags: lan
+  connection: network_cli
+  tasks:
+    - name: task1-configure hostname and domain name
+      tags: t1
+      ios_system:
+        hostname: "{{ inventory_hostname }}"
+        domain_name: "{{ domain_name }}"
+        lookup_enabled: no
+        name_servers: "{{ name_servers }}"
+
+    - name: task2-configure ntp
+      tags: t2
+      ios_ntp:
+        server: "{{ ntp_server }}"
+        logging: true
+        state: present
+
+    - name: task3-configure interfaces
+      tags: t3
+      ios_interface:
+        name: "{{ item.name }}"
+        description: "{{ item.description }}"
+        duplex: "{{ intf_duplex }}"
+        mtu: "{{ intf_mtu }}"
+        state: up
+      loop: "{{ interfaces[inventory_hostname] }}"
+      register: ios_intf
+
+    - name: task4-create l2 vlans
+      tags: t4
+      ios_vlan:
+        vlan_id: "{{ item.vlan_id }}"
+        name: "{{ item.name  }}"
+      loop: "{{ vlans }}"
+
+    - name: task5-configure l2 trunks
+      tags: t5
+      ios_l2_interface:
+        name: "{{ item.name }}"
+        mode: "{{ item.mode }}"
+        trunk_allowed_vlans: "{{ vlans | map(attribute='vlan_id') | join(',') }}"
+        state: present
+      loop: "{{ interfaces[inventory_hostname] | selectattr('mode','equalto','trunk') | list }}"
+
+    - name: task6-enable dot1q trunks
+      tags: t6
+      ios_config:
+        lines:
+          - switchport trunk encapsulation dot1q
+        parents: interface {{item.name}}
+      loop: "{{ interfaces[inventory_hostname] | selectattr('mode','equalto','trunk') | list }}"
+
+    - name: task7-configure access ports
+      tags: t7
+      ios_l2_interface:
+        name: "{{ item.name }}"
+        mode: "{{ item.mode}}"
+        access_vlan: "{{ item.vlan }}"
+        state: present
+      loop: "{{ interfaces[inventory_hostname] | selectattr('mode','equalto','access') | list }}"

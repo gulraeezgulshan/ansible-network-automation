@@ -1,8 +1,26 @@
-!
-ip name-server 192.168.138.250 192.168.138.251
-no ip domain lookup
+-----------------------------------------
+task1-configure hostname and domain name
+-----------------------------------------
+
+hostname access01
 ip domain name axiom.com.pk
-!
-ntp logging
+no ip domain lookup
+ip name-server 192.168.138.250 192.168.138.251
+
+-----------------------------------------
+task2-configure hostname and domain name
+-----------------------------------------
+
 ntp server 192.168.138.50
-!
+ntp logging
+
+-----------------------------------------
+task3-configure interfaces
+-----------------------------------------
+
+interface gigabitethernet0/1
+ description core01_g0/1
+ duplex full
+ mtu 1500
+ no shut
+
