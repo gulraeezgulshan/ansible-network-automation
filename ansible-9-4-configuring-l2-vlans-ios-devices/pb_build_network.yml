@@ -1,0 +1,38 @@
+---
+- name: configure all lan switches
+  hosts: lan
+  tags: lan
+  connection: network_cli
+  tasks:
+    - name: configure hostname and domain name
+      tags: t1
+      ios_system:
+        hostname: "{{ inventory_hostname }}"
+        domain_name: "{{ domain_name }}"
+        lookup_enabled: no
+        name_servers: "{{ name_servers }}"
+
+    - name: configure ntp
+      tags: t2
+      ios_ntp:
+        server: "{{ ntp_server }}"
+        logging: true
+        state: present
+
+    - name: configure interfaces
+      tags: t3
+      ios_interface:
+        name: "{{ item.name }}"
+        description: "{{ item.description }}"
+        duplex: "{{ intf_duplex }}"
+        mtu: "{{ intf_mtu }}"
+        state: up
+      loop: "{{ interfaces[inventory_hostname] }}"
+      register: ios_intf
+
+    - name: create l2 vlans
+      tags: t4
+      ios_vlan:
+        vlan_id: "{{ item.vlan_id }}"
+        name: "{{ item.name  }}"
+      loop: "{{ vlans }}"
