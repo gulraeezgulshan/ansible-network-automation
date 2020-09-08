@@ -1,0 +1,8 @@
+!
+ip name-server 192.168.138.250 192.168.138.251
+no ip domain lookup
+ip domain name axiom.com.pk
+!
+ntp logging
+ntp server 192.168.138.50
+!

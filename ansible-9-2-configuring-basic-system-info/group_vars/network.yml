@@ -1,0 +1,19 @@
+---
+# SSH Configuration Variables
+ansible_network_os: ios
+ansible_connection: network_cli
+ansible_user: admin
+ansible_password: cisco
+ansible_become: yes
+ansible_become_password: cisco
+ansible_become_method: enable
+
+# Variables required for Initial Configurations
+domain_name: axiom.com.pk
+management_network: 192.168.138.0/24
+
+name_servers:
+  - 192.168.138.250
+  - 192.168.138.251
+
+ntp_server: 192.168.138.50
