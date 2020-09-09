@@ -1,0 +1,10 @@
+---
+# Initial Configuration Variables
+ansible_host_id: 53
+hostname: ios-SW3
+management_interface: Vlan1
+
+hst_svi_id: 1
+hst_vrrp_priority: 100
+hst_router_id: 1
+hst_vlan_priority: 40960
