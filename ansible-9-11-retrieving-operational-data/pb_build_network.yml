@@ -1,0 +1,246 @@
+---
+- name: configure all lan switches
+  hosts: lan
+  tags: lan
+  connection: network_cli
+  tasks:
+    - name: task1-configure hostname and domain name
+      tags: t1
+      ios_system:
+        hostname: "{{ inventory_hostname }}"
+        domain_name: "{{ domain_name }}"
+        lookup_enabled: no
+        name_servers: "{{ name_servers }}"
+
+    - name: task2-configure ntp
+      tags: t2
+      ios_ntp:
+        server: "{{ ntp_server }}"
+        logging: true
+        state: present
+
+    - name: task3-configure interfaces
+      tags: t3
+      ios_interface:
+        name: "{{ item.name }}"
+        description: "{{ item.description }}"
+        duplex: "{{ intf_duplex }}"
+        mtu: "{{ intf_mtu }}"
+        state: up
+      loop: "{{ interfaces[inventory_hostname] }}"
+      register: ios_intf
+
+    - name: task4-create l2 vlans
+      tags: t4
+      ios_vlan:
+        vlan_id: "{{ item.vlan_id }}"
+        name: "{{ item.name  }}"
+      loop: "{{ vlans }}"
+
+    - name: task5-configure l2 trunks
+      tags: t5
+      ios_l2_interface:
+        name: "{{ item.name }}"
+        mode: "{{ item.mode }}"
+        trunk_allowed_vlans: "{{ vlans | map(attribute='vlan_id') | join(',') }}"
+        state: present
+      loop: "{{ interfaces[inventory_hostname] | selectattr('mode','equalto','trunk') | list }}"
+
+    - name: task6-enable dot1q trunks
+      tags: t6
+      ios_config:
+        lines:
+          - switchport trunk encapsulation dot1q
+        parents: interface {{item.name}}
+      loop: "{{ interfaces[inventory_hostname] | selectattr('mode','equalto','trunk') | list }}"
+
+    - name: task7-configure access ports
+      tags: t7
+      ios_l2_interface:
+        name: "{{ item.name }}"
+        mode: "{{ item.mode}}"
+        access_vlan: "{{ item.vlan }}"
+        state: present
+      loop: "{{ interfaces[inventory_hostname] | selectattr('mode','equalto','access') | list }}"
+
+- name: configure all core l3 switches
+  hosts: core
+  tags: l3_core
+  tasks:
+    - name: task8-create l3 vlan interfaces
+      tags: t8
+      ios_l3_interface:
+        name: "{{item.name }}"
+        ipv4: "{{item.ipv4 | ipv4(hst_svi_id)}}"
+      loop: "{{svi_interfaces}}"
+
+    - name: task9-enable the vlan interfaces
+      tags: t9
+      ios_interface:
+        name: "{{ item.name }}"
+        enabled: true
+      loop: "{{ svi_interfaces }}"
+
+    - name: task10-create vrrp configs
+      tags: t10
+      ios_config:
+        parents: interface {{ item.name }}
+        lines:
+          - vrrp {{item.name.split('Vlan')[1]}} priority {{ hst_vrrp_priority }}
+          - vrrp {{item.name.split('Vlan')[1]}} ip {{item.ipv4 | ipv4(254)|ipaddr('address')}}
+      loop: "{{svi_interfaces | selectattr('vrrp','equalto',true) | list }}"
+
+    - name: task11-create l2 core vlans
+      tags: t11
+      ios_vlan:
+        vlan_id: "{{item.vlan_id | int}}"
+        interfaces: "{{ item.interface}}"
+      loop: "{{ core_vlans }}"
+
+    - name: task12-allow core vlans on core trunk
+      tags: t12
+      ios_l2_interface:
+        name: "{{ item.interface }}"
+        mode: trunk
+        trunk_allowed_vlans: "{{ (vlans + core_vlans) |
+          map(attribute='vlan_id') |
+          join(',') }}"
+        state: present
+      loop: "{{ core_vlans }}"
+
+    - name: task13-adjust vlan priority
+      tags: t13
+      ios_config:
+        lines:
+          - spanning-tree vlan {{ item.vlan_id }} priority {{ hst_vlan_priority }}
+      loop: "{{(vlans + core_vlans) }}"
+
+    - name: task14-create wan links
+      tags: t14
+      ios_interface:
+        name: "{{ item.name }}"
+        description: "{{ item.description }}"
+        duplex: "{{ intf_duplex }}"
+        mtu: "{{ intf_mtu }}"
+        state: up
+      when: "'Loopback0' not in item.name"
+      loop: "{{ core_l3_links[inventory_hostname] }}"
+
+    - name: task15-make wan interfaces as l3 interfaces
+      tags: t15
+      ios_config:
+        parents: interface {{ item.name }}
+        lines:
+          - no switchport
+        save_when: changed
+      loop: "{{core_l3_links[inventory_hostname]}}"
+      when: "'Loopback0' not in item.name"
+
+    - name: task16-configure ip address on wan links
+      tags: t16
+      ios_l3_interface:
+        name: "{{ item.name }}"
+        ipv4: "{{ item.ipv4 | ipv4(1) }}"
+      loop: "{{ core_l3_links[inventory_hostname] }}"
+      when: "'Loopback0' not in item.name"
+
+    - name: task17-configure ip address on loopback
+      tags: t17
+      ios_l3_interface:
+        name: "{{ item.name }}"
+        ipv4: "{{ item.ipv4 }}"
+      loop: "{{ core_l3_links[inventory_hostname] }}"
+      when: "'Loopback0' in item.name"
+
+    - name: task18-configure ospf
+      tags: t18
+      ios_config:
+        parents: router ospf {{ ospf_process }}
+        lines:
+          - router-id {{ loopback_prefix | ipv4(hst_router_id) | ipaddr('address')}}
+
+    - name: task19-configure ospf on interfaces
+      tags: t19
+      ios_config:
+        parents: interface {{ item.name }}
+        lines:
+          - ip ospf {{ ospf_process }} area {{ ospf_area }}
+          - ip ospf network point-to-point
+          - ip ospf cost {{item.ospf_metric | default(ospf_metric)}}
+      loop: "{{ (svi_interfaces + core_l3_links[inventory_hostname]) | selectattr('ospf') | list }}"
+
+    - name: task20-configure ospf passive interfaces
+      tags: t20
+      ios_config:
+        parents: router ospf {{ ospf_process }}
+        lines: passive-interface {{item.name}}
+      loop: "{{ (svi_interfaces + core_l3_links[inventory_hostname]) | selectattr('ospf','equalto','passive') | list }}"
+
+- name: configure all wan routers
+  hosts: wan
+  tags: wan
+  tasks:
+    - name: task21-configure system parameters
+      tags: t21
+      ios_system:
+        hostname: "{{ inventory_hostname }}"
+        domain_name: "{{ domain_name }}"
+        lookup_enabled: no
+        name_servers: "{{ name_servers }}"
+
+    - name: task22-configure ntp
+      tags: t22
+      ios_ntp:
+        server: "{{ ntp_server }}"
+        logging: true
+        source_int: GigabitEthernet2
+        state: present
+
+    - name: task23-configure managment static routes
+      tags: t23
+      ios_static_route:
+        prefix: "{{ item.prefix.split('/')[0] }}"
+        mask: "{{ item.prefix | ipv4('netmask') }}"
+        next_hop: "{{ item.next_hop }}"
+      loop: "{{ mgmt_static_routes }}"
+
+    - name: task24-configure all interfaces
+      tags: t24
+      ios_interface:
+        name: "{{ item.name }}"
+        description: "{{ item.description | default('') }}"
+        mtu: "{{ intf_mtu }}"
+        state: up
+      loop: "{{ wan_l3_links[inventory_hostname] }}"
+
+    - name: task25-configure interface ip addresses
+      tags: t25
+      ios_l3_interface:
+        name: "{{item.name }}"
+        ipv4: "{{item.ipv4 }}"
+      loop: "{{wan_l3_links[inventory_hostname]}}"
+
+    - name: task26-configure ospf
+      tags: t26
+      ios_config:
+        parents: router ospf {{ ospf_process }}
+        lines:
+          - router-id {{ loopback_prefix | ipv4(hst_router_id) | ipaddr('address')}}
+
+    - name: task27-configure ospf on interfaces
+      tags: t27
+      ios_config:
+        parents: interface {{ item.name }}
+        lines:
+          - ip ospf {{ ospf_process }} area {{ ospf_area }}
+          - ip ospf network point-to-point
+          - ip ospf cost {{item.ospf_metric | default(ospf_metric)}}
+      loop: "{{ wan_l3_links[inventory_hostname] | selectattr('ospf') | list  }}"
+
+    - name: task28-configure ospf passive interfaces
+      tags: t28
+      ios_config:
+        parents: router ospf {{ ospf_process }}
+        lines: passive-interface {{item.name}}
+        save_when: changed
+      loop: "{{ wan_l3_links[inventory_hostname] | selectattr('ospf','equalto','passive') | list }}"

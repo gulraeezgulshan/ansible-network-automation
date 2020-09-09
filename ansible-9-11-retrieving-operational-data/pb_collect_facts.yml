@@ -1,0 +1,34 @@
+---
+- name: collect device facts
+  hosts: core,wan
+  tasks:
+    - name: task1-gather device facts
+      tags: t1
+      ios_facts:
+      #register: device_facts
+    # - debug: var=device_facts
+
+    - name: task2-write device facts
+      tags: t2
+      blockinfile:
+        path: ./facts.yml
+        create: yes
+        block: |
+          device_facts:
+          {% for host in play_hosts %}
+          {% set node = hostvars[host] %}
+            {{ node.ansible_net_hostname }}:
+              serial_number: {{ node.ansible_net_serialnum }}
+              ios_version: {{ node.ansible_net_version }}
+          {% endfor %}
+          all_loopbacks:
+          {% for host in play_hosts %}
+          {% set node = hostvars[host] %}
+          {% if node.ansible_net_interfaces is defined %}
+          {% if node.ansible_net_interfaces.Loopback0 is defined %}
+            - {{ node.ansible_net_interfaces.Loopback0.ipv4[0].address }}
+          {% endif %}
+          {% endif %}
+          {% endfor %}
+      run_once: yes
+      delegate_to: localhost

@@ -1,0 +1,5 @@
+---
+# Initial Configuration Variables
+ansible_host_id: 52
+hostname: ios-SW2
+management_interface: Vlan1
