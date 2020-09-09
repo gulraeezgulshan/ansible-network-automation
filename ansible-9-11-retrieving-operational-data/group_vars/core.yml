@@ -31,7 +31,7 @@ core_l3_links:
   core02:
     - name: GigabitEthernet1/0
       description: wan02_Gi2
-      ipv4: 10.3.1.4/30
+      ipv4: 10.4.1.0/30
       ospf: yes
       ospf_metric: 200
       peer: wan02

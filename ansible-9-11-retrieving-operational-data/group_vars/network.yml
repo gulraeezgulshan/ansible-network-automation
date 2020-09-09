@@ -32,7 +32,7 @@ loopback_prefix: 10.100.1.0/24
 mgmt_net_gw: 192.168.138.50
 
 mgmt_static_routes:
-  - prefix: 192.168.0.0/24
+  - prefix: 192.168.138.0/24
     next_hop: "{{ mgmt_net_gw }}"
   - prefix: 10.8.0.0/24
     next_hop: "{{ mgmt_net_gw }}"

@@ -1,0 +1,86 @@
+!-------------------------------!
+!!!!Configuring LAN switches!!!!!
+!-------------------------------!
+!
+!Configuring access02
+!
+enable
+conf t
+!
+hostname ios-SW2
+!
+ip domain name axiom.com.pk
+!
+ip ssh version 2
+ip scp server enable
+!
+ip name-server 192.168.138.250 192.168.138.251
+no ip domain lookup
+!
+ntp server 192.168.138.50
+ntp logging
+!
+line vty 0 4
+login local
+transport input all
+exit
+!
+username admin secret cisco
+enable secret cisco
+!
+crypto key generate rsa modulus 1024
+!
+vlan 10
+name data
+!
+vlan 20
+name voice
+!
+vlan 100
+name web
+!
+interface g0/0
+description management_interface
+ip addr 192.168.138.52 255.255.255.0
+duplex full
+mtu 1500
+no shut
+!
+interface g0/1
+description core01_g0/2
+duplex full
+mtu 1500
+switchport mode trunk
+switchport trunk allowed vlan 10,20,100
+switchport trunk encapsulation dot1q
+no shut
+!
+interface g0/2
+description core02_g0/2
+duplex full
+mtu 1500
+switchport mode trunk
+switchport trunk allowed vlan 10,20,100
+switchport trunk encapsulation dot1q
+no shut
+!
+interface g0/3
+description voice_vlan
+duplex full
+mtu 1500
+switchport access vlan 20
+switchport mode access
+no shut
+!
+interface g1/0
+description web_vlan
+duplex full
+mtu 1500
+switchport access vlan 100
+switchport mode access
+no shut
+!
+exit
+!
+
+

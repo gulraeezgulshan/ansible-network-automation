@@ -1,0 +1,32 @@
+!-------------------------------!
+!!!!Configuring WAN Routers !!!!!
+!-------------------------------!
+!
+!Configuring wan01
+!
+enable
+conf t
+!
+hostname iosxe-R1
+!
+ip domain name axiom.com.pk
+!
+ip ssh version 2
+ip scp server enable
+!
+ip name-server 192.168.138.250 192.168.138.251
+no ip domain lookup
+!
+ntp server 192.168.138.55
+ntp logging
+!
+line vty 0 4
+login local
+transport input all
+exit
+!
+username admin secret cisco
+enable secret cisco
+!
+ip route 10.8.0.0 255.255.255.0 192.168.138.50
+ip route 192.168.0.0 255.255.255.0 192.168.138.50
