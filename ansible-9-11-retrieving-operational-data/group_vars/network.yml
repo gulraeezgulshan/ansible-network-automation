@@ -14,8 +14,8 @@ management_network: 192.168.138.0/24
 
 # Variables required for basic configuration
 name_servers:
-  - 192.168.138.250
-  - 192.168.138.251
+  - 8.8.8.8
+  - 8.8.4.4
 
 ntp_server: 192.168.138.50
 

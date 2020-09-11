@@ -7,14 +7,14 @@
 enable
 conf t
 !
-hostname iosxe-R1
+hostname wan01
 !
 ip domain name axiom.com.pk
 !
 ip ssh version 2
 ip scp server enable
 !
-ip name-server 192.168.138.250 192.168.138.251
+ip name-server 8.8.8.8 8.8.4.4
 no ip domain lookup
 !
 ntp server 192.168.138.55
@@ -28,5 +28,24 @@ exit
 username admin secret cisco
 enable secret cisco
 !
-ip route 10.8.0.0 255.255.255.0 192.168.138.50
-ip route 192.168.0.0 255.255.255.0 192.168.138.50
+interface loopback0
+ip address 10.100.1.3 255.255.255.255
+ip ospf network point-to-point
+ip ospf 10 area 0
+ip ospf cost 10
+!
+interface GigabitEthernet1
+ip address 192.168.138.5 255.255.255.0
+no shut
+!
+interface GigabitEthernet2
+description core01_g1/0
+ip address 10.3.1.2 255.255.255.252
+ip ospf network point-to-point
+ip ospf 10 area 0
+ip ospf cost 100
+!
+interface GigabitEthernet3
+description wan01_Gi3
+ip address 10.3.1.9 255.255.255.252
+!

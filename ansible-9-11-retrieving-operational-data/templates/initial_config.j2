@@ -11,6 +11,8 @@ ip ssh version 2
 ip scp server enable
 !
 int {{ management_interface }}
+{% if switchport %}no switchport 
+{% endif %}
 ip addr {{management_network | ipv4(ansible_host_id) | ipaddr('address') }} {{management_network | ipaddr('netmask')}}
 no shut
 !

@@ -3,6 +3,7 @@
 ansible_host_id: 55
 hostname: iosxe-R1
 management_interface: GigabitEthernet1
+switchport: No
 
 hst_router_id: 3
 hst_p2p_id: 1

@@ -1,14 +1,13 @@
 ---
-- name : First Play
+- name: first play
   hosts: all
-  gather_facts: False
-  connection: local
+  connection: network_cli
+
   tasks:
-    - name: First Task
+    - name: first task
       ios_command:
         commands: show ip int br
-        timeout: 60
       register: int_br
-    - name: Second Task
+    - name: second task
       debug:
         var: int_br

@@ -2,7 +2,8 @@
 # Initial Configuration Variables
 ansible_host_id: 53
 hostname: ios-SW3
-management_interface: Vlan1
+management_interface: GigabitEthernet0/0
+switchport: True
 
 hst_svi_id: 1
 hst_vrrp_priority: 100

@@ -2,4 +2,5 @@
 # Initial Configuration Variables
 ansible_host_id: 51
 hostname: ios-SW1
-management_interface: Vlan1
+management_interface: GigabitEthernet0/0
+switchport: True

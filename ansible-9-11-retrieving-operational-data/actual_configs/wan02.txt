@@ -7,14 +7,14 @@
 enable
 conf t
 !
-hostname iosxe-R2
+hostname wan02
 !
 ip domain name axiom.com.pk
 !
 ip ssh version 2
 ip scp server enable
 !
-ip name-server 192.168.138.250 192.168.138.251
+ip name-server 8.8.8.8 8.8.4.4
 no ip domain lookup
 !
 ntp server 192.168.138.56

@@ -1,3 +1,17 @@
 [routers]
-192.168.122.7 ansible_user=admin ansible_password=cisco
-192.168.122.9 ansible_user=admin ansible_password=cisco
+R1 ansible_host=192.168.138.7
+R2 ansible_host=192.168.138.9
+
+[routers:vars]
+ansible_network_os=ios
+ansible_connection=network_cli
+ansible_user=admin
+ansible_password=cisco
+ansible_become=yes
+ansible_become_password=cisco
+ansible_become_method=enable
+
+
+
+
+
