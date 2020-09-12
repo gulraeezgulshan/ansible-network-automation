@@ -1,17 +1,2 @@
 ---
-ansible_host: 192.168.138.52
-hostname: csr-R2
-
-interfaces:
-  - name: g0/0
-    ip: 192.168.138.52
-    mask: 255.255.255.0
-  - name: g0/1
-    ip: 192.168.11.2
-    mask: 255.255.255.0
-  - name: g0/2
-    ip: 192.168.14.1
-    mask: 255.255.255.0
-  - name: g0/3
-    ip: 192.168.15.1
-    mask: 255.255.255.0
+ansible_host_id: 52
