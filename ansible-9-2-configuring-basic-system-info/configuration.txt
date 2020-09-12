@@ -8,7 +8,7 @@ no ip domain lookup
 ip name-server 192.168.138.250 192.168.138.251
 
 -----------------------------------------
-task2-configure hostname and domain name
+task2-ntp server
 -----------------------------------------
 
 ntp server 192.168.138.50

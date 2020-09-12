@@ -1,0 +1,56 @@
+ansible_network_os: ios
+ansible_connection: network_cli
+ansible_user: admin
+ansible_password: cisco
+ansible_become: yes
+ansible_become_password: cisco
+ansible_become_method: enable
+ansible_python_interpreter: /usr/bin/python3
+
+management_interface: vlan1
+management_network: 192.168.138.0/24
+domain_name: axiom.com.pk
+privilege_value: 15
+
+interfaces:
+  SW1:
+    - name: GigabitEthernet0/1
+      description: SW2_g0/0
+      mode: trunk
+    - name: GigabitEthernet0/2
+      description: SW3_g0/0
+      mode: trunk
+    - name: GigabitEthernet0/3
+      description: data_vlan
+      mode: access
+      vlan: 10
+  SW2:
+    - name: GigabitEthernet0/0
+      description: SW1_g0/1
+      mode: trunk
+    - name: GigabitEthernet0/1
+      description: SW3_g0/1
+      mode: trunk
+    - name: GigabitEthernet0/2
+      description: voice_vlan
+      mode: access
+      vlan: 20
+  SW3:
+    - name: GigabitEthernet0/0
+      description: SW1_g0/2
+      mode: trunk
+    - name: GigabitEthernet0/1
+      description: SW2_g0/1
+      mode: trunk
+    - name: GigabitEthernet0/2
+      description: web_vlan
+      mode: access
+      vlan: 30
+
+vlans:
+  - name: data
+    vlan_id: 10
+  - name: voice
+    vlan_id: 20
+  - name: web
+    vlan_id: 30

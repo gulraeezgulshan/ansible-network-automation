@@ -1,8 +1,7 @@
 ---
-- name : first play
+- name: first play
   hosts: routers
-  gather_facts: false
-  connection: local
+  connection: network_cli
   tasks:
     - name: configure top level configuration
       ios_config:
@@ -11,5 +10,6 @@
       ios_config:
         lines:
           - description test interface
-          - ip address 192.168.122.10 255.255.255.0
-        parents: interface GigabitEthernet0/1
+          - ip address {{ ip_address }} {{ netmask }}
+          - no shutdown
+        parents: interface FastEthernet1/0

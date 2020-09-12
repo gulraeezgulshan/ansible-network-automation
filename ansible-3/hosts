@@ -1,9 +1,4 @@
-[routers]
-r1 ansible_host=192.168.122.7
-r2 ansible_host=192.168.122.9
-
-[routers:vars]
-ansible_user=admin
-ansible_password=cisco
-
-
+[lan]
+SW1
+SW2
+SW3

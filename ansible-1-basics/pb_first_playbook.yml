@@ -1,13 +1,13 @@
 ---
 - name: first play
-  hosts: all
+  hosts: routers
   connection: network_cli
 
   tasks:
     - name: first task
       ios_command:
         commands: show ip int br
-      register: int_br
+      register: var_br
     - name: second task
       debug:
-        var: int_br
+        var: var_br

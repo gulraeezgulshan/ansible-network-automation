@@ -1,12 +1,14 @@
 ---
 - name: Generate initial config from Jinja2
   hosts: localhost
+  gather_facts: no
   tasks:
     - name: Create Configs Directory
       file: path=configs  state=directory
 
 - name: Generate initial config from Jinja2
-  hosts: network
+  hosts: lan
+  gather_facts: no
   tasks:
     - name: Generate Cisco Basic Config
       template:

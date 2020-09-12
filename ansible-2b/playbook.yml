@@ -1,0 +1,15 @@
+---
+- name: first play
+  hosts: routers
+  connection: network_cli
+  tasks:
+    - name: configure top level configuration
+      ios_config:
+        lines: hostname {{ inventory_hostname }}
+    - name: configure interface settings
+      ios_config:
+        lines:
+          - description test interface
+          - ip address {{ ip_address }} {{ netmask }}
+          - no shutdown
+        parents: interface FastEthernet1/0
