@@ -3,16 +3,17 @@
   hosts: lan
   tags: lan
   connection: network_cli
+
   tasks:
     - name: create l2 vlans
-      tags: t1
+      tags: vlan
       ios_vlan:
         vlan_id: "{{ item.vlan_id }}"
         name: "{{ item.name  }}"
       loop: "{{ vlans }}"
 
     - name: configure l2 trunks
-      tags: t2
+      tags: trunk
       ios_l2_interface:
         name: "{{ item.name }}"
         mode: "{{ item.mode }}"
@@ -21,7 +22,7 @@
       loop: "{{ interfaces[inventory_hostname] | selectattr('mode','equalto','trunk') | list }}"
 
     - name: enable dot1q trunks
-      tags: t3
+      tags: dot1q
       ios_config:
         lines:
           - switchport trunk encapsulation dot1q
@@ -29,7 +30,7 @@
       loop: "{{ interfaces[inventory_hostname] | selectattr('mode','equalto','trunk') | list }}"
 
     - name: configure access ports
-      tags: t4
+      tags: access
       ios_l2_interface:
         name: "{{ item.name }}"
         mode: "{{ item.mode}}"
@@ -38,7 +39,7 @@
       loop: "{{ interfaces[inventory_hostname] | selectattr('mode','equalto','access') | list }}"
 
     - name: show vlan details
-      tags: t5
+      tags: show
       ios_command:
         commands: show vlan br
       register: vlan_br

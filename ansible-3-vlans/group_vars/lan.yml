@@ -7,6 +7,8 @@ ansible_become_password: cisco
 ansible_become_method: enable
 ansible_python_interpreter: /usr/bin/python3
 
+ansible_host: "{{ management_network | ipv4(ansible_host_id) | ipaddr('address')}}"
+
 management_interface: vlan1
 management_network: 192.168.138.0/24
 domain_name: axiom.com.pk

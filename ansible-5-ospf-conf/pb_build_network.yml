@@ -3,20 +3,23 @@
   hosts: routers
   connection: network_cli
   tasks:
-    - name: configure Hostname and Domain Name
-      ios_system:
-        hostname: "{{ inventory_hostname }}"
-        domain_name: "{{ domain_name }}"
-        lookup_enabled: no
-
     - name: configure ip address on wan links
-      tags: t2
+      tags: t1
       ios_l3_interfaces:
         config:
           - name: "{{ item.name }}"
             ipv4:
               - address: "{{ item.ipv4 }}"
         state: merged
+      loop: "{{ router_interfaces[inventory_hostname] }}"
+      when: "'Loopback0' not in item.name"
+
+    - name: no shutdown to wan interfaces
+      tags: t2
+      ios_config:
+        parents: interface {{ item.name }}
+        lines:
+          - no shutdown
       loop: "{{ router_interfaces[inventory_hostname] }}"
       when: "'Loopback0' not in item.name"
 
