@@ -26,6 +26,7 @@
               serial_number: {{ node.ansible_net_serialnum }}
               ios_type: {{ node.ansible_net_system }}
               ios_version: {{ node.ansible_net_version }}
+              hostname: {{ node.ansible_hostname }}
           {% endfor %}
           all_loopbacks:
           {% for host in play_hosts %}

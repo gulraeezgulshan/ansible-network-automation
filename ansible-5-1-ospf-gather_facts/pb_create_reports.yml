@@ -1,0 +1,25 @@
+- name: create reports
+  hosts: routers
+  tasks:
+    - name: gather device facts
+      tags: t1
+      ios_facts:
+        gather_subset: all
+      register: facts
+
+    - name: create configs directory
+      file: path=reports/facts  state=directory
+
+    - name: generate device specific reports
+      tags: t2
+      template:
+        src: "templates/facts.j2"
+        dest: "reports/facts/{{ inventory_hostname }}.md"
+
+    - name: create master report
+      tags: t3
+      assemble:
+        src: "reports/facts/"
+        dest: "reports/master-report.md"
+        delimiter: "---"
+      run_once: true

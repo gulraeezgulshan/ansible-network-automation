@@ -14,7 +14,7 @@
           file:
             path: "{{ config_folder }}"
             state: directory
-        - name: "Create Folder to store operational commands"
+        - name: create folder to store operational commands
           file:
             path: "{{ op_folder }}"
             state: directory
