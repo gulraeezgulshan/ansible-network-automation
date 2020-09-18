@@ -33,7 +33,7 @@ router_interfaces:
     - name: GigabitEthernet0/2
       description: "management_interface"
       ipv4: 10.1.1.5/30
-      ospf: yess
+      ospf: yes
       management: no
     - name: GigabitEthernet0/3
       description: "management_interface"
@@ -57,7 +57,7 @@ router_interfaces:
     - name: GigabitEthernet0/2
       description: "management_interface"
       ipv4: 10.1.1.9/30
-      ospf: yess
+      ospf: yes
       management: no
     - name: GigabitEthernet0/3
       description: "management_interface"
@@ -81,7 +81,7 @@ router_interfaces:
     - name: GigabitEthernet0/2
       description: "management_interface"
       ipv4: 10.1.1.13/30
-      ospf: yess
+      ospf: yes
       management: no
     - name: GigabitEthernet0/3
       description: "management_interface"
@@ -105,7 +105,7 @@ router_interfaces:
     - name: GigabitEthernet0/2
       description: "management_interface"
       ipv4: 10.1.1.17/30
-      ospf: yess
+      ospf: yes
       management: no
     - name: GigabitEthernet0/3
       description: "management_interface"
@@ -129,7 +129,7 @@ router_interfaces:
     - name: GigabitEthernet0/2
       description: "management_interface"
       ipv4: 10.1.1.21/30
-      ospf: yess
+      ospf: yes
       management: no
     - name: GigabitEthernet0/3
       description: "management_interface"
@@ -153,7 +153,7 @@ router_interfaces:
     - name: GigabitEthernet0/2
       description: "management_interface"
       ipv4: 10.1.1.22/30
-      ospf: yess
+      ospf: yes
       management: no
     - name: GigabitEthernet0/3
       description: "management_interface"

@@ -1,0 +1,30 @@
+---
+- name: validate network reachability
+  hosts: routers
+  vars:
+    host_id: 10
+    packet_count: 10
+  tasks:
+    - name: get all interfaces
+      tags: t1
+      set_fact:
+        all_interface_prefixes: "{{ router_interfaces[inventory_hostname] | map(attribute='ipv4') | list }}"
+      run_once: yes
+      delegate_to: localhost
+
+    - name: ping all interfaces
+      tags: t2
+      ios_ping:
+        dest: "{{ item | ipaddr('address') }}"
+      loop: "{{ all_interface_prefixes }}"
+
+    - name: including all loopbacks
+      include_vars: facts.yml
+      run_once: yes
+      delegate_to: localhost
+
+    - name: ping loopbacks for all routers
+      ios_ping:
+        dest: "{{ item }}"
+        count: "{{ packet_count }}"
+      loop: "{{ all_loopbacks }}"
