@@ -1,0 +1,6 @@
+---
+- name: save running config
+  hosts: routers
+  tasks:
+    - ios_config:
+        save_when: always

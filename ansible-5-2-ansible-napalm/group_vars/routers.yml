@@ -1,0 +1,165 @@
+ansible_network_os: ios
+ansible_connection: network_cli
+ansible_user: admin
+ansible_password: cisco
+ansible_become: yes
+ansible_become_password: cisco
+ansible_become_method: enable
+ansible_python_interpreter: /usr/bin/python3
+
+domain_name: axiom.com.pk
+management_network: 192.168.138.0/24
+privilege_value: 15
+management_interface: g0/0
+ansible_host: "{{ management_network | ipv4(ansible_host_id) | ipaddr('address')}}"
+
+ospf_process: 10
+ospf_area: 0
+
+loopback_prefix: 10.100.1.0/24
+
+router_interfaces:
+  R1:
+    - name: GigabitEthernet0/0
+      description: "management_interface"
+      ipv4: 192.168.138.51/24
+      ospf: passive
+      management: yes
+    - name: GigabitEthernet0/1
+      description: "management_interface"
+      ipv4: 10.1.1.1/30
+      ospf: yes
+      management: no
+    - name: GigabitEthernet0/2
+      description: "management_interface"
+      ipv4: 10.1.1.5/30
+      ospf: yes
+      management: no
+    - name: GigabitEthernet0/3
+      description: "management_interface"
+      ipv4: 192.168.10.1/24
+      ospf: yes
+      management: no
+    - name: Loopback0
+      ipv4: "{{ loopback_prefix | ipv4(ansible_host_id) | ipaddr('address') + '/32'}}"
+      ospf: passive
+  R2:
+    - name: GigabitEthernet0/0
+      description: "management_interface"
+      ipv4: 192.168.138.52/24
+      ospf: passive
+      management: yes
+    - name: GigabitEthernet0/1
+      description: "management_interface"
+      ipv4: 10.1.1.2/30
+      ospf: yes
+      management: no
+    - name: GigabitEthernet0/2
+      description: "management_interface"
+      ipv4: 10.1.1.9/30
+      ospf: yes
+      management: no
+    - name: GigabitEthernet0/3
+      description: "management_interface"
+      ipv4: 192.168.20.1/24
+      ospf: yes
+      management: no
+    - name: Loopback0
+      ipv4: "{{ loopback_prefix | ipv4(ansible_host_id) | ipaddr('address') + '/32'}}"
+      ospf: passive
+  R3:
+    - name: GigabitEthernet0/0
+      description: "management_interface"
+      ipv4: 192.168.138.53/24
+      ospf: passive
+      management: yes
+    - name: GigabitEthernet0/1
+      description: "management_interface"
+      ipv4: 10.1.1.10/30
+      ospf: yes
+      management: no
+    - name: GigabitEthernet0/2
+      description: "management_interface"
+      ipv4: 10.1.1.13/30
+      ospf: yes
+      management: no
+    - name: GigabitEthernet0/3
+      description: "management_interface"
+      ipv4: 192.168.30.1/24
+      ospf: yes
+      management: no
+    - name: Loopback0
+      ipv4: "{{ loopback_prefix | ipv4(ansible_host_id) | ipaddr('address') + '/32'}}"
+      ospf: passive
+  R4:
+    - name: GigabitEthernet0/0
+      description: "management_interface"
+      ipv4: 192.168.138.54/24
+      ospf: passive
+      management: yes
+    - name: GigabitEthernet0/1
+      description: "management_interface"
+      ipv4: 10.1.1.6/30
+      ospf: yes
+      management: no
+    - name: GigabitEthernet0/2
+      description: "management_interface"
+      ipv4: 10.1.1.17/30
+      ospf: yes
+      management: no
+    - name: GigabitEthernet0/3
+      description: "management_interface"
+      ipv4: 192.168.40.1/24
+      ospf: yes
+      management: no
+    - name: Loopback0
+      ipv4: "{{ loopback_prefix | ipv4(ansible_host_id) | ipaddr('address') + '/32'}}"
+      ospf: passive
+  R5:
+    - name: GigabitEthernet0/0
+      description: "management_interface"
+      ipv4: 192.168.138.55/24
+      ospf: passive
+      management: yes
+    - name: GigabitEthernet0/1
+      description: "management_interface"
+      ipv4: 10.1.1.18/30
+      ospf: yes
+      management: no
+    - name: GigabitEthernet0/2
+      description: "management_interface"
+      ipv4: 10.1.1.21/30
+      ospf: yes
+      management: no
+    - name: GigabitEthernet0/3
+      description: "management_interface"
+      ipv4: 192.168.50.1/24
+      ospf: yes
+      management: no
+    - name: Loopback0
+      ipv4: "{{ loopback_prefix | ipv4(ansible_host_id) | ipaddr('address') + '/32'}}"
+      ospf: passive
+  R6:
+    - name: GigabitEthernet0/0
+      description: "management_interface"
+      ipv4: 192.168.138.56/24
+      ospf: passive
+      management: yes
+    - name: GigabitEthernet0/1
+      description: "management_interface"
+      ipv4: 10.1.1.14/30
+      ospf: yes
+      management: no
+    - name: GigabitEthernet0/2
+      description: "management_interface"
+      ipv4: 10.1.1.22/30
+      ospf: yes
+      management: no
+    - name: GigabitEthernet0/3
+      description: "management_interface"
+      ipv4: 192.168.60.1/24
+      ospf: yes
+      management: no
+    - name: Loopback0
+      ipv4: "{{ loopback_prefix | ipv4(ansible_host_id) | ipaddr('address') + '/32'}}"
+      ospf: passive

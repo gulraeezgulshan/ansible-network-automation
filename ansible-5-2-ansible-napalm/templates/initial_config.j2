@@ -1,0 +1,32 @@
+!!!------------------------------------
+!!!Configuring {{ inventory_hostname }}
+!!!------------------------------------
+enable
+conf t
+!
+hostname {{ inventory_hostname }}
+!
+ip domain name {{ domain_name }}
+ip ssh version 2
+ip scp server enable
+!
+int {{ management_interface }}
+ip addr {{management_network | ipv4(ansible_host_id) | ipaddr('address') }} {{management_network | ipaddr('netmask')}}
+no shut
+!
+exit
+!
+line vty 0 4
+login local
+transport input all
+exit
+!
+username {{ ansible_user }} privilege {{ privilege_value }} secret {{ ansible_password }}
+!
+enable secret {{ ansible_become_password }}
+!
+crypto key generate rsa modulus 1024
+end
+!
+write memory
+!
